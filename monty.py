@@ -5,6 +5,7 @@ import time
 
 from scripts.scene_object import SceneObject
 from scripts.scrolling_particle import ScrollingParticle
+from scripts.song_title import SongTitle
 from scripts.util import time_format
 from scripts.vector2d import Vector2D
 from scripts.progress_bar import ProgressBar
@@ -25,6 +26,7 @@ amplutude_entity: Amplitude = None
 fft_entity: FFT = None
 
 song_progress_bar: ProgressBar = None
+song_title_obj: SongTitle = None
 
 start_time: int = 0                 # Unix timestamp for when the program starts.
 end_time: int = 0                   # Estimated time when the song ends.
@@ -35,6 +37,7 @@ def settings():
     py5.size(1000, 800, py5.P3D)
 
 def setup():
+    global ACTIVE_NODES
     py5.window_title("CC25 Assignment")
     py5.window_resizable(False)
     
@@ -49,7 +52,7 @@ def setup():
     fft_entity.input(audio_player)
     
     global FONT
-    FONT = py5.create_font("Terminus.ttf", 20)
+    FONT = py5.create_font("Terminus.ttf", 20, False)
     py5.text_font(FONT)
     
     global start_time, end_time
@@ -62,9 +65,11 @@ def setup():
     
     global song_progress_bar
     song_progress_bar = ProgressBar(start_time, start_time, end_time, Vector2D(30, 760), Vector2D(850, 20))
-    
-    global ACTIVE_NODES
     ACTIVE_NODES.append(song_progress_bar)
+    
+    global song_title_obj
+    song_title_obj = SongTitle(Vector2D(900, 650), 0.3)
+    ACTIVE_NODES.append(song_title_obj)
     
 def draw():
     global amplutude_entity, fft_entity
@@ -84,6 +89,8 @@ def draw():
     
     ACTIVE_NODES = [n for n in ACTIVE_NODES if n.ALIVE]
     for n in ACTIVE_NODES:
+        if type(n) == SongTitle:
+            n.scale = AMP_VAL
         n.step(FRAME)
     
     intro_particles = [n for n in intro_particles if n.ALIVE]

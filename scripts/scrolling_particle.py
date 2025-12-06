@@ -44,10 +44,10 @@ class ScrollingParticle(SceneObject):
         for i, (tx, ty) in enumerate(self.trail_history):
             fade = py5.remap(i, 0, len(self.trail_history) - 1, 0, 80) # 0-10 => 0-80 alpha
             scal = self.scale - py5.remap(i, 0, len(self.trail_history) - 1, 1, 0)
-            py5.fill(self.colour, 255, 255, fade)
+            py5.fill(self.colour, 255, 50, fade)
             self.draw_particle(tx - 5, ty, scal)
         
-        py5.fill(self.colour, 255, 255)
+        py5.fill(self.colour, 50, 255)
         self.draw_particle(self.x, self.y + self.y_offset, self.scale)
     
         py5.pop_style()
