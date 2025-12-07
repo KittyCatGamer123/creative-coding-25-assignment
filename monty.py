@@ -3,12 +3,18 @@ import py5
 import py5_tools
 import time 
 
+from lyrics import LYRICS
+from scripts.big_sphere import BigSphere
+from scripts.util import time_format
+from scripts.progress_bar import ProgressBar
+from scripts.edge_glow import EdgeGlow, GlowPosition
+from scripts.gd_cube import GeometricSquare
+from scripts.lyrics_typewriter import LyricTypewriter
 from scripts.scene_object import SceneObject
 from scripts.scrolling_particle import ScrollingParticle
 from scripts.song_title import SongTitle
-from scripts.util import time_format
+from scripts.star_grid_item import StarGridItem
 from scripts.vector2d import Vector2D
-from scripts.progress_bar import ProgressBar
 
 py5_tools.processing.download_library("Sound")
 from processing.sound import SoundFile, Amplitude, FFT
@@ -27,6 +33,9 @@ fft_entity: FFT = None
 
 song_progress_bar: ProgressBar = None
 song_title_obj: SongTitle = None
+song_lyric_objs: list[LyricTypewriter] = []
+song_gd_cube: GeometricSquare = None
+song_big_sphere: BigSphere = None
 
 start_time: int = 0                 # Unix timestamp for when the program starts.
 end_time: int = 0                   # Estimated time when the song ends.
@@ -68,8 +77,12 @@ def setup():
     ACTIVE_NODES.append(song_progress_bar)
     
     global song_title_obj
-    song_title_obj = SongTitle(Vector2D(900, 650), 0.3)
+    song_title_obj = SongTitle(Vector2D(920, 670), 0.3)
     ACTIVE_NODES.append(song_title_obj)
+    
+    global song_big_sphere
+    song_big_sphere = BigSphere(Vector2D(py5.width / 2, py5.height / 2))
+    ACTIVE_NODES.append(song_big_sphere)
     
 def draw():
     global amplutude_entity, fft_entity
@@ -87,6 +100,24 @@ def draw():
             intro_particles.append(new_particle)
             ACTIVE_NODES.append(new_particle)
     
+    if FRAME in [50, 570, 1100, 1640]:
+        eg = EdgeGlow(Vector2D(0, 0), FRAME, FRAME + (60 * 3), GlowPosition.LEFT)
+        ACTIVE_NODES.insert(0, eg)
+        
+        for row in range(1, 8):
+            for column in range(1, 10):
+                star = StarGridItem(Vector2D(column * 100, row * 100), 5, 1)
+                ACTIVE_NODES.insert(1, star)
+                
+    if FRAME == 45:
+        lyrc = LyricTypewriter(Vector2D(50, 740), LYRICS, 30, 5)
+        ACTIVE_NODES.append(lyrc)
+    
+    if FRAME == 1100:
+        global song_gd_cube
+        song_gd_cube = GeometricSquare(Vector2D(75, py5.height / 2))
+        ACTIVE_NODES.append(song_gd_cube)
+    
     ACTIVE_NODES = [n for n in ACTIVE_NODES if n.ALIVE]
     for n in ACTIVE_NODES:
         if type(n) == SongTitle:
@@ -100,11 +131,20 @@ def draw():
     global start_time, song_progress_bar
     current_time = time.time()
     song_progress_bar.value = current_time
+    
+    # Extra UI that classes are not needed for
     py5.push_style()
     py5.fill(230)
+    
+    py5.text_align(py5.LEFT)
     py5.text(time_format(current_time - start_time), 900, 775)
+    
+    py5.text_align(py5.RIGHT)
+    py5.text(str(FRAME), 970, 30)
+    py5.text(str(current_time - start_time), 970, 50)
+    
     py5.pop_style()
     
-    FRAME += 1
+    FRAME += 1    
     
 py5.run_sketch()
