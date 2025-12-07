@@ -6,6 +6,7 @@ import time
 from lyrics import LYRICS
 from scripts.big_sphere import BigSphere
 from scripts.fourcircle_particles import FourCircleParticles
+from scripts.gd_wave import GeometricWave
 from scripts.util import time_format
 from scripts.progress_bar import ProgressBar
 from scripts.edge_glow import EdgeGlow, GlowPosition
@@ -37,6 +38,7 @@ song_title_obj: SongTitle = None
 song_lyric_objs: list[LyricTypewriter] = []
 song_gd_cube: GeometricSquare = None
 song_big_sphere: BigSphere = None
+song_gd_wave: GeometricWave = None
 
 start_time: int = 0                 # Unix timestamp for when the program starts.
 end_time: int = 0                   # Estimated time when the song ends.
@@ -112,22 +114,32 @@ def draw():
         
         if FRAME == 1640:
             for n in range(200):
-                part = FourCircleParticles(Vector2D(0,0))
+                part = FourCircleParticles(Vector2D(0,0), 7)
                 ACTIVE_NODES.append(part)
                 
     if FRAME == 45:
         lyrc = LyricTypewriter(Vector2D(50, 740), LYRICS, 30, 5)
         ACTIVE_NODES.append(lyrc)
     
+    global song_gd_cube
     if FRAME == 1100:
-        global song_gd_cube
-        song_gd_cube = GeometricSquare(Vector2D(75, py5.height / 2))
+        song_gd_cube = GeometricSquare(Vector2D(175, py5.height / 2))
         ACTIVE_NODES.append(song_gd_cube)
+        
+    elif FRAME == 2150:
+        global song_gd_wave
+        song_gd_wave = GeometricWave(Vector2D(song_gd_cube.x, song_gd_cube.y))
+        ACTIVE_NODES.append(song_gd_wave)
+        
+        song_gd_cube.ALIVE = False
     
     ACTIVE_NODES = [n for n in ACTIVE_NODES if n.ALIVE]
     for n in ACTIVE_NODES:
         if type(n) == SongTitle:
             n.scale = AMP_VAL
+        elif type(n) == GeometricWave:
+            song_gd_wave.amp = AMP_VAL
+        
         n.step(FRAME)
     
     intro_particles = [n for n in intro_particles if n.ALIVE]
