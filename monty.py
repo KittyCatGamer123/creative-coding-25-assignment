@@ -5,6 +5,7 @@ import time
 
 from lyrics import LYRICS
 from scripts.big_sphere import BigSphere
+from scripts.fourcircle_particles import FourCircleParticles
 from scripts.util import time_format
 from scripts.progress_bar import ProgressBar
 from scripts.edge_glow import EdgeGlow, GlowPosition
@@ -108,6 +109,11 @@ def draw():
             for column in range(1, 10):
                 star = StarGridItem(Vector2D(column * 100, row * 100), 5, 1)
                 ACTIVE_NODES.insert(1, star)
+        
+        if FRAME == 1640:
+            for n in range(200):
+                part = FourCircleParticles(Vector2D(0,0))
+                ACTIVE_NODES.append(part)
                 
     if FRAME == 45:
         lyrc = LyricTypewriter(Vector2D(50, 740), LYRICS, 30, 5)
