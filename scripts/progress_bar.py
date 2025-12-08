@@ -22,6 +22,7 @@ class ProgressBar(SceneObject):
         seeker_base_x = self.x - (seeker_width / 2)
         seeker_x = seeker_base_x + (self.w * seeker_progress)
         
+        py5.push_matrix()
         py5.push_style()
         
         py5.color_mode(py5.RGB)
@@ -34,3 +35,4 @@ class ProgressBar(SceneObject):
         py5.rect(self.x, self.y + (self.h / 2) - (line_thickness / 2), self.w, (line_thickness / 2))
         
         py5.pop_style()
+        py5.pop_matrix()

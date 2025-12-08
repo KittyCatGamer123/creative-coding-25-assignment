@@ -44,9 +44,19 @@ class GeometricSquare(SceneObject):
         py5.translate(self.x, y)
         py5.rotate(rot)
         
+        alph = 255
+        
+        if frame_number >= 6500:
+            alph = py5.remap(frame_number, 6500, 7500, 255, 0)
+        elif frame_number >= 7500:
+            self.ALIVE = False
+            py5.pop_style()
+            py5.pop_matrix()
+            return
+        
         py5.rect_mode(py5.CENTER)
-        py5.stroke(255)
-        py5.fill(0)
+        py5.stroke(255, alph)
+        py5.fill(0, alph)
         py5.rect(0, 0, 40, 40)
         
         py5.pop_style()

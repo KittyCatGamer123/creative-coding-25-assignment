@@ -8,7 +8,7 @@ class GeometricWave(SceneObject):
         super().__init__(position)
         
         self.is_holding = False
-        self.wave_speed = 5
+        self.wave_speed = 8
         self.amp = 0
         self.rot = 0
         
@@ -18,11 +18,14 @@ class GeometricWave(SceneObject):
     def _process(self, frame_number):
         self.is_holding = (self.amp >= 0.48)
         
+        #self.wave_speed = 8 if not self.mini_mode else 4
+        rot_angle = 45
+        
         if self.is_holding:
-            self.rot = -45 * (py5.PI / 180)
+            self.rot = -rot_angle * (py5.PI / 180)
             self.y -= self.wave_speed
         else:
-            self.rot = 45 * (py5.PI / 180)
+            self.rot = rot_angle * (py5.PI / 180)
             self.y += self.wave_speed
 
         bx_local = -12

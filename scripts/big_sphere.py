@@ -9,17 +9,24 @@ class BigSphere(SceneObject):
     
     def _draw(self, frame_number):
         sphere_rad = 0
-        if frame_number < 2000:
-            sphere_rad = py5.remap(frame_number, 0, 2000, 0, 100)
-            
-        elif frame_number < 2100:
+        if frame_number < 1900:
+            sphere_rad = py5.remap(frame_number, 0, 1900, 0, 100)
+        
+        elif frame_number < 2050:
             sphere_rad = 100
         
-        elif frame_number < 2151:
-            sphere_rad = py5.remap(frame_number, 2150, 2175, 100, 1000)
+        elif frame_number < 2100:
+            sphere_rad = py5.remap(frame_number, 2050, 2100, 100, 1000)
+        
+        elif frame_number < 4250:
+            sphere_rad = 1000
+            
+        elif frame_number < 5000:
+            sphere_rad = py5.remap(frame_number, 4250, 5000, 1000, 0)
         
         else:
-            sphere_rad = 1000
+            self.ALIVE = False
+            return
         
         py5.push_matrix()
         py5.push_style()
